@@ -75,7 +75,9 @@ Section1:NewButton("ReDeemCodeX2", "กดมาดูอะไรครับ",
 
 end)
 
-Section1:NewToggle("AuToFarm LeveL", "กดมาดูอะไรครับ", function(state)
+Section1:NewToggle("AuToFarm LeveL", "กดมาดูอะไรครับ", function(serthfstgh)
+
+    _G.AUTOFARM = serthfstgh
 
     getgenv().ToTargets = function(p)
         task.spawn(function()
