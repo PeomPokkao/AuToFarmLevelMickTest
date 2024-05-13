@@ -1651,12 +1651,20 @@ Section1:NewToggle("FasT aTTack", "กดมาดูอะไรครับ", 
             end)
         end
     end)
-
+    
     local SeraphFrame = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts:WaitForChild("CombatFramework")))[2]
-    local VirtualUser = game:GetService('VirtualUser')
-    local RigControllerR = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework.RigController))[2]
-    local Client = game:GetService("Players").LocalPlayer
-    local DMG = require(Client.PlayerScripts.CombatFramework.Particle.Damage)
+
+    function Boost()
+        spawn(function()
+            game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange", tostring(SeraphFuckWeapon()))
+        end)
+    end
+
+    function Unboost()
+        spawn(function()
+            game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("unequipWeapon", tostring(SeraphFuckWeapon()))
+        end)
+    end
 
     function SeraphFuckWeapon() 
         local p13 = SeraphFrame.activeController
@@ -1666,6 +1674,22 @@ Section1:NewToggle("FasT aTTack", "กดมาดูอะไรครับ", 
             wea = wea.Parent
         end
         return wea
+    end
+    
+    local cdnormal = 0.01
+
+    Attack = function()
+        local ac = SeraphFrame.activeController
+        if ac and ac.equipped then
+            task.spawn(function()
+                if tick() - cdnormal > 0.01 then
+                    ac:attack()
+                    cdnormal = tick()
+                else
+                    game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(120), 2, "")
+                end
+            end)
+        end
     end
 
     function getHits(Size)
@@ -1696,44 +1720,10 @@ Section1:NewToggle("FasT aTTack", "กดมาดูอะไรครับ", 
             if _G.FastAttack then
                 if SeraphFrame.activeController then
                     SeraphFrame.activeController.timeToNextAttack = 0.01  -- ปรับเป็นเวลาที่ต้องรอระหว่างการโจมตี
-                    SeraphFrame.activeController.focusStart = 0
-                    SeraphFrame.activeController.hitboxMagnitude = 40
-                    SeraphFrame.activeController.humanoid.AutoRotate = true
-                    SeraphFrame.activeController.increment = 1 + 1 / 1
                 end
             end
         end
     end)
-
-    function Boost()
-        spawn(function()
-            game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange", tostring(SeraphFuckWeapon()))
-        end)
-    end
-
-    function Unboost()
-        spawn(function()
-            game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("unequipWeapon", tostring(SeraphFuckWeapon()))
-        end)
-    end
-
-    local cdnormal = 0.01
-    local Animation = Instance.new("Animation")
-    local CooldownFastAttack = 0.01
-
-    Attack = function()
-        local ac = SeraphFrame.activeController
-        if ac and ac.equipped then
-            task.spawn(function()
-                if tick() - cdnormal > 0.01 then
-                    ac:attack()
-                    cdnormal = tick()
-                else
-                    game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", getHits(120), 2, "")
-                end
-            end)
-        end
-    end
     
     local b = tick()
 
@@ -1758,7 +1748,7 @@ Section1:NewToggle("FasT aTTack", "กดมาดูอะไรครับ", 
             end
         end
     end)
-
+    
     local k = tick()
 
     spawn(function()
@@ -1781,7 +1771,7 @@ Section1:NewToggle("FasT aTTack", "กดมาดูอะไรครับ", 
             end
         end
     end)
-
+    
     tjw1 = true
 
     task.spawn(function()
@@ -1811,7 +1801,7 @@ Section1:NewToggle("FasT aTTack", "กดมาดูอะไรครับ", 
             end)
         end
     end)
-
+    
     local CameRa = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework.CameraShaker)
     CameRa.CameraShakeInstance.CameraShakeState = {FadingIn = 3, FadingOut = 2, Sustained = 0, Inactive = 1}
     
